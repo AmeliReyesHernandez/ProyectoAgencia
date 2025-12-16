@@ -13,6 +13,7 @@ const dbConfig = {
   password: '1234',
   database: 'agencia',
   port: 3306
+
 };
 
 // Pool de conexiones para mejor rendimiento
