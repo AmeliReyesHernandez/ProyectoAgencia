@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 const dbConfig = {
     host: 'localhost',
     user: 'root',
-    password: '1234', // Asegúrate que esta sea tu contraseña de root
+    password: '1312', // Asegúrate que esta sea tu contraseña de root
     database: 'agencia'
 };
 

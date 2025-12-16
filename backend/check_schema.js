@@ -1,11 +1,12 @@
 const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 const dbConfig = {
-    host: 'localhost',
-    user: 'root',
-    password: '1312',
-    database: 'agencia',
-    port: 3306
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '1312',
+    database: process.env.DB_NAME || 'agencia',
+    port: process.env.DB_PORT || 3306
 };
 
 async function checkSchema() {

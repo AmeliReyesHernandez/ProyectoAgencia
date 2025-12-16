@@ -384,7 +384,7 @@
 
 <script setup>
 import { ref, onMounted, computed, watch } from 'vue';
-import { personaeService, cargosService, healthCheck } from '../services/api.js';
+import { personaeService, aportacionesService, cargosService, healthCheck } from '../services/api.js';
 
 const allPersonae = ref([]); // Para calcular contadores
 const loading = ref(false);
@@ -588,17 +588,17 @@ const verDetalles = async (persona) => {
 
 const saveAportacion = async () => {
   try {
-    const response = await fetch(`http://localhost:4000/api/personas/${selectedPersona.value.id_persona}/aportaciones`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(aportacionForm.value)
+    await aportacionesService.create({
+      id_persona: selectedPersona.value.id_persona,
+      ano: aportacionForm.value.ano,
+      cooperacion_rastreo: aportacionForm.value.cooperacion_rastreo,
+      asistio_tequios: aportacionForm.value.asistio_tequios,
+      asistio_reuniones: aportacionForm.value.asistio_reuniones,
+      multa: aportacionForm.value.multa
     });
     
-    if (!response.ok) throw new Error('Error al guardar aportación');
-    
     // Recargar aportaciones
-    const respAportaciones = await fetch(`http://localhost:4000/api/personas/${selectedPersona.value.id_persona}/aportaciones`);
-    if (respAportaciones.ok) aportaciones.value = await respAportaciones.json();
+    aportaciones.value = await aportacionesService.getByPersona(selectedPersona.value.id_persona);
     
     showAportacionForm.value = false;
     aportacionForm.value = {

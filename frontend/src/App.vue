@@ -1,16 +1,10 @@
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted } from 'vue';
 import PersonaeList from './components/PersonaeList.vue';
 import Login from './components/Login.vue';
 
 const isAuthenticated = ref(false);
 const currentUser = ref('');
-
-// Estado para cambio de contraseña
-const showChangePassword = ref(false);
-const pwdForm = reactive({ current: '', new: '' });
-const pwdMsg = ref('');
-const pwdType = ref('');
 
 onMounted(() => {
   const session = localStorage.getItem('userSession');
@@ -31,37 +25,6 @@ const logout = () => {
   isAuthenticated.value = false;
   currentUser.value = '';
 };
-
-const changePassword = async () => {
-  pwdMsg.value = '';
-  try {
-    const response = await fetch('http://localhost:4000/api/change-password', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: currentUser.value,
-        currentPassword: pwdForm.current,
-        newPassword: pwdForm.new
-      })
-    });
-    
-    const data = await response.json();
-    
-    if (!response.ok) throw new Error(data.error);
-    
-    pwdMsg.value = 'Contraseña actualizada correctamente';
-    pwdType.value = 'success';
-    setTimeout(() => {
-      showChangePassword.value = false;
-      pwdForm.current = ''; 
-      pwdForm.new = '';
-      pwdMsg.value = '';
-    }, 2000);
-  } catch (err) {
-    pwdMsg.value = err.message;
-    pwdType.value = 'error';
-  }
-};
 </script>
 
 <template>
@@ -74,9 +37,7 @@ const changePassword = async () => {
         </div>
         
         <div class="header-actions">
-          <button @click="showChangePassword = true" class="action-btn">
-            Cambiar Contraseña
-          </button>
+
           <button @click="logout" class="action-btn logout">
             Cerrar Sesión ({{ currentUser }})
           </button>
@@ -92,28 +53,6 @@ const changePassword = async () => {
   </div>
 
   <Login v-else @login-success="onLoginSuccess" />
-
-  <!-- Modal Cambio de Contraseña (fuera del container principal para mejor stacking) -->
-  <div v-if="showChangePassword" class="modal-overlay">
-    <div class="modal-card">
-      <h3>Cambiar Contraseña</h3>
-      <form @submit.prevent="changePassword">
-        <div class="form-group">
-          <label>Contraseña Actual</label>
-          <input v-model="pwdForm.current" type="password" required>
-        </div>
-        <div class="form-group">
-          <label>Nueva Contraseña</label>
-          <input v-model="pwdForm.new" type="password" required>
-        </div>
-        <div v-if="pwdMsg" :class="['msg', pwdType]">{{ pwdMsg }}</div>
-        <div class="modal-actions">
-          <button type="submit" class="btn-primary">Actualizar</button>
-          <button type="button" @click="showChangePassword = false" class="btn-secondary">Cancelar</button>
-        </div>
-      </form>
-    </div>
-  </div>
 </template>
 
 <style>

@@ -1,5 +1,5 @@
-// Configuración de la API
-const API_URL = 'http://localhost:4000/api';
+// Configuración de la API - Usar variables de entorno
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 // Servicio para Personae
 export const personaeService = {

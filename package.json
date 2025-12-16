@@ -22,11 +22,14 @@
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && node server.js",
-    "dev:electron": "cross-env BACKEND_PORT=4000 electron .",
+    "dev:electron": "electron .",
     "dev": "concurrently -k \"npm:dev:frontend\" \"npm:dev:backend\" \"npm:dev:electron\"",
     "build:frontend": "cd frontend && npm run build",
     "pack": "npm run build:frontend && electron-builder --dir",
-    "dist": "npm run build:fronte d && electron-builder"
+    "dist": "npm run build:frontend && electron-builder",
+    "dist:win": "npm run build:frontend && electron-builder --win",
+    "dist:mac": "npm run build:frontend && electron-builder --mac",
+    "dist:linux": "npm run build:frontend && electron-builder --linux"
   },
 
   "keywords": [],
