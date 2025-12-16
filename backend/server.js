@@ -10,9 +10,10 @@ app.use(express.json());
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: '1312',
+  password: '1234',
   database: 'agencia',
   port: 3306
+
 };
 
 // Pool de conexiones para mejor rendimiento
@@ -42,21 +43,25 @@ app.get('/api/personas', async (req, res) => {
         e.fecha_asignacion AS estatus_fecha
       FROM personas p
       LEFT JOIN (
-        SELECT id_persona, cargo, fecha_inicio, fecha_fin
-        FROM cargos
-        WHERE (id_persona, fecha_inicio) IN (
-          SELECT id_persona, MAX(fecha_inicio)
-          FROM cargos
-          GROUP BY id_persona
+        SELECT c1.id_persona, c1.cargo, c1.fecha_inicio, c1.fecha_fin
+        FROM cargos c1
+        WHERE c1.id_cargo = (
+          SELECT c2.id_cargo
+          FROM cargos c2
+          WHERE c2.id_persona = c1.id_persona
+          ORDER BY c2.fecha_inicio DESC, c2.id_cargo DESC
+          LIMIT 1
         )
       ) c ON p.id_persona = c.id_persona
       LEFT JOIN (
-        SELECT id_persona, estatus, fecha_asignacion
-        FROM estatus
-        WHERE (id_persona, fecha_asignacion) IN (
-          SELECT id_persona, MAX(fecha_asignacion)
-          FROM estatus
-          GROUP BY id_persona
+        SELECT e1.id_persona, e1.estatus, e1.fecha_asignacion
+        FROM estatus e1
+        WHERE e1.id_estatus = (
+          SELECT e2.id_estatus
+          FROM estatus e2
+          WHERE e2.id_persona = e1.id_persona
+          ORDER BY e2.fecha_asignacion DESC, e2.id_estatus DESC
+          LIMIT 1
         )
       ) e ON p.id_persona = e.id_persona
     `;

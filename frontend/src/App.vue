@@ -67,16 +67,20 @@ const changePassword = async () => {
 <template>
   <div v-if="isAuthenticated" class="app-container">
     <header class="app-header">
-      <h1>🏢 Sistema de Gestión de Agencia</h1>
-      <p class="subtitle">Gestión completa de personas, aportaciones y cargos</p>
-      
-      <div class="header-actions">
-        <button @click="showChangePassword = true" class="action-btn">
-          🔒 Cambiar Contraseña
-        </button>
-        <button @click="logout" class="action-btn logout">
-          Cerrar Sesión ({{ currentUser }})
-        </button>
+      <div class="header-content">
+        <div class="header-text">
+          <h1>🏢 Sistema de Gestión de Agencia</h1>
+          <p class="subtitle">Gestión completa de personas, aportaciones y cargos</p>
+        </div>
+        
+        <div class="header-actions">
+          <button @click="showChangePassword = true" class="action-btn">
+            Cambiar Contraseña
+          </button>
+          <button @click="logout" class="action-btn logout">
+            Cerrar Sesión ({{ currentUser }})
+          </button>
+        </div>
       </div>
     </header>
     
@@ -132,22 +136,46 @@ body {
 .app-header {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  padding: 20px 20px;
-  text-align: center;
+  padding: 20px 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
+  position: relative;
 }
 
-.app-header h1 { font-size: 2rem; }
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+}
+
+.header-text {
+  text-align: left;
+}
+
+.app-header h1 { font-size: 2rem; margin-bottom: 5px; }
 .subtitle { opacity: 0.9; }
 
-.header-actions { display: flex; gap: 10px; }
-.action-btn { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.2s; font-weight: 600; }
-.action-btn:hover { background: rgba(255,255,255,0.3); }
-.action-btn.logout:hover { background: #ffebee; color: #c62828; }
+.header-actions { 
+  display: flex; 
+  gap: 8px; 
+  flex-shrink: 0;
+}
+
+.action-btn { 
+  background: rgba(255,255,255,0.2); 
+  border: 1px solid rgba(255,255,255,0.4); 
+  color: white; 
+  padding: 6px 12px; 
+  border-radius: 6px; 
+  cursor: pointer; 
+  transition: 0.2s; 
+  font-weight: 500; 
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.action-btn:hover { background: rgba(255,255,255,0.3); transform: translateY(-1px); }
+.action-btn.logout:hover { background: rgba(255,255,255,0.9); color: #c62828; }
 
 /* Main Content */
 .app-main {

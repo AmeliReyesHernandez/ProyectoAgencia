@@ -28,93 +28,105 @@ Sistema completo de gestión para agencias que incluye administración de person
 ### Base de Datos
 - **MySQL 8.0+** - Sistema de gestión de base de datos
 
-## 🚀 Instalación
+## 🚀 Instalación Rápida
+
+### ⚡ INICIO RÁPIDO
+
+**¿Primera vez instalando? → Lee [`CHECKLIST_RAPIDO.md`](CHECKLIST_RAPIDO.md)**
+
+**¿Necesitas ayuda detallada? → Lee [`GUIA_INSTALACION.md`](GUIA_INSTALACION.md)**
 
 ### Requisitos Previos
 
-- Node.js 16+ instalado
-- MySQL 8.0+ instalado y corriendo
-- MySQL Workbench (opcional, para gestión visual)
+- **Node.js 16+** - [Descargar](https://nodejs.org/)
+- **MySQL 8.0+** - [Descargar](https://dev.mysql.com/downloads/installer/)
 
-### 1. Clonar/Descargar el Proyecto
+### Pasos Básicos
 
-```bash
-cd C:\Users\Usuario\Documents\SistemaAgencia
-```
-
-### 2. Configurar Base de Datos
-
-1. Abre MySQL Workbench
-2. Ejecuta el script `database/schema.sql` para crear las tablas
-3. Verifica que la base de datos se creó correctamente:
+#### 1. Configurar Base de Datos
 
 ```sql
-SHOW DATABASES;
-USE mydb;
+-- Conectar a MySQL
+mysql -u root -p
+
+-- Crear base de datos
+CREATE DATABASE IF NOT EXISTS agencia;
+USE agencia;
+
+-- Ejecutar scripts (EN ESTE ORDEN):
+-- 1. database/schema.sql
+-- 2. database/login_schema.sql
+
+-- Verificar
 SHOW TABLES;
 ```
 
-### 3. Configurar Backend
+#### 2. Configurar Backend
 
 ```bash
-# Ir a la carpeta del backend
 cd backend
-
-# Instalar dependencias
 npm install
 
-# Editar server.js y configurar la conexión a BD
-# Cambiar el nombre de la base de datos si es necesario
+# ⚠️ EDITAR server.js línea 13:
+# Cambiar password: '1234' por TU contraseña de MySQL
 ```
 
-**Archivo: `backend/server.js` (línea 14)**
+**Configuración en `backend/server.js` (líneas 10-16):**
 ```javascript
 const dbConfig = {
   host: 'localhost',
   user: 'root',
-  password: '', // Agregar contraseña si tienes
-  database: 'mydb', // Cambiar por el nombre de tu BD
+  password: '1234',      // ⚠️ CAMBIAR por tu contraseña
+  database: 'agencia',   // ⚠️ DEBE ser 'agencia'
   port: 3306
 };
 ```
 
-### 4. Configurar Frontend
+#### 3. Configurar Frontend
 
 ```bash
-# Ir a la carpeta del frontend
-cd ../frontend
-
-# Instalar dependencias
+cd frontend
 npm install
 ```
 
-## ▶️ Ejecutar la Aplicación
+#### 4. Ejecutar la Aplicación
 
-### Iniciar Backend
-
+**Terminal 1 - Backend:**
 ```bash
 cd backend
 npm start
 ```
 
-El backend estará disponible en: `http://localhost:4000`
-
-### Iniciar Frontend
-
-En otra terminal:
-
+**Terminal 2 - Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
 
-El frontend estará disponible en: `http://localhost:5173`
+**Abrir navegador:**
+- 🌐 http://localhost:5173
+- 👤 Usuario: `admin`
+- 🔑 Contraseña: `admin123`
 
-### Verificar Conexión
+### ✅ Verificar Instalación
 
-Abre tu navegador y visita:
-- Frontend: `http://localhost:5173`
-- Health Check: `http://localhost:4000/api/health`
+```powershell
+# Ejecutar script de verificación
+.\verificar_instalacion.ps1
+```
+
+### 🔍 Health Check
+
+Verifica que el backend esté funcionando:
+- http://localhost:4000/api/health
+
+---
+
+### 📚 Documentación Adicional
+
+- **[CHECKLIST_RAPIDO.md](CHECKLIST_RAPIDO.md)** - Pasos esenciales resumidos
+- **[GUIA_INSTALACION.md](GUIA_INSTALACION.md)** - Guía detallada con solución de problemas
+- **[verificar_instalacion.ps1](verificar_instalacion.ps1)** - Script de verificación automática
 
 ## 📡 API Endpoints
 
