@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Sistema Agencia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .error-container {
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 28px;
+            margin-bottom: 16px;
+        }
+
+        p {
+            color: #4a5568;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .error-code {
+            background: #fed7d7;
+            color: #c53030;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .solutions {
+            text-align: left;
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 24px;
+        }
+
+        .solutions h3 {
+            color: #2d3748;
+            margin-bottom: 12px;
+            font-size: 18px;
+        }
+
+        .solutions ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .solutions li {
+            padding: 8px 0;
+            color: #4a5568;
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .solutions li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+        }
+
+        .reload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 24px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .reload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .reload-btn:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="error-container">
+        <div class="error-icon">⚠️</div>
+        <h1>No se pudo conectar al servidor</h1>
+        <p>El backend no respondió en el tiempo esperado.</p>
+        
+        <div class="error-code">
+            Error: Backend Timeout
+        </div>
+
+        <div class="solutions">
+            <h3>💡 Posibles soluciones:</h3>
+            <ul>
+                <li>Verifica que MySQL esté ejecutándose</li>
+                <li>Comprueba que la base de datos 'agencia' existe</li>
+                <li>Revisa las credenciales en backend/.env</li>
+                <li>Asegúrate de que el puerto 4000 esté disponible</li>
+                <li>Cierra la aplicación y vuelve a abrirla</li>
+            </ul>
+        </div>
+
+        <button class="reload-btn" onclick="window.location.reload()">
+            🔄 Reintentar Conexión
+        </button>
+    </div>
+</body>
+</html>

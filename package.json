@@ -3,22 +3,23 @@
   "version": "1.0.0",
   "description": "",
   "main": "electron-main.js",
-
   "build": {
-  "appId": "com.agencia.sistema",
-  "productName": "SistemaAgencia",
-  "files": [
-    "backend/**/*",
-    "frontend/dist/**/*",
-    "electron-main.js",
-    "preload.js",
-    "node_modules/**/*"
-  ],
-  "win": {
-    "signAndEditExecutable": false
-  }
-},
-
+    "appId": "com.agencia.sistema",
+    "productName": "SistemaAgencia",
+    "files": [
+      "backend/**/*",
+      "backend/node_modules/**/*",
+      "frontend/dist/**/*",
+      "electron-main.js",
+      "preload.js",
+      "offline.html",
+      "node_modules/**/*"
+    ],
+    "win": {
+      "signAndEditExecutable": false
+    },
+    "asar": false
+  },
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && node server.js",
@@ -31,17 +32,16 @@
     "dist:mac": "npm run build:frontend && electron-builder --mac",
     "dist:linux": "npm run build:frontend && electron-builder --linux"
   },
-
   "keywords": [],
   "author": "Ameli Reyes",
   "license": "MIT",
-
+  "dependencies": {
+    "wait-port": "^1.1.0"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1",
     "cross-env": "^10.1.0",
     "electron": "^39.2.6",
-    "electron-builder": "^26.0.12",
-    "wait-port": "^1.1.0"
+    "electron-builder": "^26.4.0"
   }
 }
-

@@ -9,19 +9,23 @@ const isDev = !app.isPackaged;
 
 function startBackend() {
   console.log('[Electron] Iniciando backend...');
-  
+
   const backendPath = path.join(__dirname, 'backend', 'server.js');
   const backendDir = path.join(__dirname, 'backend');
-  
-  backendProcess = spawn('node', [path.basename(backendPath)], {
+
+  // Usar fork en lugar de spawn para usar el Node interno de Electron
+  // Esto asegura que funcione aunque el usuario no tenga Node instalado
+  const { fork } = require('child_process');
+
+  backendProcess = fork(backendPath, [], {
     cwd: backendDir,
     env: {
       ...process.env,
       PORT: '4000',
       DB_HOST: 'localhost',
-      CORS_ORIGIN: 'http://localhost:5173,http://localhost:3000'
+      CORS_ORIGIN: 'http://localhost:5173'
     },
-    stdio: 'inherit'
+    stdio: 'inherit' // Permite ver logs en la consola principal
   });
 
   backendProcess.on('error', (err) => {
@@ -31,7 +35,7 @@ function startBackend() {
 
 async function createWindow() {
   console.log('[Electron] Creando ventana...');
-  
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -46,8 +50,8 @@ async function createWindow() {
 
   // Esperar a que el backend esté listo
   console.log('[Electron] Esperando que backend esté disponible...');
-  const portOpen = await waitPort({ 
-    host: 'localhost', 
+  const portOpen = await waitPort({
+    host: 'localhost',
     port: 4000,
     timeout: 30000
   });
@@ -79,18 +83,17 @@ app.on('ready', async () => {
   setTimeout(() => {
     createWindow();
   }, 5000); // Aumentar de 3000 a 5000 para dar más tiempo al backend
-    createMenu();
-  }, 1000);
+  createMenu();
 });
 
 app.on('window-all-closed', () => {
   console.log('[Electron] Cerrando aplicación...');
-  
+
   if (backendProcess) {
     console.log('[Electron] Terminando backend...');
     backendProcess.kill();
   }
-  
+
   if (process.platform !== 'darwin') {
     app.quit();
   }
