@@ -1,0 +1,732 @@
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔄 add secrets lifecycle management: https://dotenvx.com/ops
+🚀 Backend corriendo en http://localhost:4000
+📝 Entorno: development
+🔐 CORS permitido desde: http://localhost:5173, http://localhost:5174
+📊 Endpoints disponibles:
+   POST   /api/login
+   PUT    /api/change-password
+   GET    /api/personas
+   POST   /api/personas
+   PUT    /api/personas/:id
+   DELETE /api/personas/:id
+   GET    /api/personas/:id/aportaciones
+   POST   /api/personas/:id/aportaciones
+   DELETE /api/aportaciones/:id
+   GET    /api/personas/:id/cargos
+   POST   /api/cargos
+   PUT    /api/cargos/:id
+   GET    /api/health
+[REQ] POST /api/personas body: {"nombre":"EmptyAportacionTester","apellido_paterno":"Test","aportacion_inicial":{"ano":2026,"cooperacion_rastreo":"","asistio_tequios":"No","asistio_reuniones":"No","multa":0}}
+[REQ] GET /api/personas/15/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '15' ]
+[REQ] POST /api/personas body: {"nombre":"WithAportacionTester","apellido_paterno":"Test","aportacion_inicial":{"ano":2026,"cooperacion_rastreo":"Limpieza","asistio_tequios":"Sí","multa":0}}
+[REQ] GET /api/personas/16/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '16' ]
+[REQ] GET /api/personas/15/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '15' ]
+[REQ] DELETE /api/aportaciones/0 body: undefined
+[SQL EXEC] DELETE FROM aportaciones WHERE id_aportacion = ? params: [ '0' ]
+[REQ] DELETE /api/personas/15 body: undefined
+[SQL EXEC] SELECT * FROM personas WHERE id_persona = ? params: [ '15' ]
+[REQ] GET /api/personas/16/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '16' ]
+[REQ] DELETE /api/aportaciones/11 body: undefined
+[SQL EXEC] DELETE FROM aportaciones WHERE id_aportacion = ? params: [ '11' ]
+[REQ] DELETE /api/personas/16 body: undefined
+[SQL EXEC] SELECT * FROM personas WHERE id_persona = ? params: [ '16' ]
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] POST /api/personas body: {"nombre":"mirna","apellido_paterno":"ortiz","apellido_materno":"","edad":"","direccion":"","telefono":"","ano_alta_agencia":"","cargo":"","estatus":"madres_solteras","curp":"","credencial":"","carta_compromiso":"","constancia_no_adeudo":"","solicitud_toma_agua":"","autorizacion_toma_agua":"","solicitud_cambio_propietario":"","respuesta_solicitud_cambio_propietario":"","fecha_registro":"","cargo_fecha_inicio":"2026-02-11","cargo_fecha_fin":"","aportacion_inicial":{"cooperacion_rastreo":"","asistio_tequios":"No","asistio_reuniones":"No","multa":0}}
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/personas/17/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '17' ]
+[REQ] POST /api/personas/17/aportaciones body: {"ano":2026,"cooperacion_rastreo":"rastreo","asistio_tequios":"No","asistio_reuniones":"No","multa":100}
+[SQL EXEC] INSERT INTO aportaciones (id_persona, ano, cooperacion_rastreo, asistio_tequios, asistio_reuniones, multa)
+       VALUES (?, ?, ?, ?, ?, ?) params: [ '17', 2026, 'rastreo', 'No', 'No', 100 ]
+[REQ] GET /api/personas/17/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '17' ]
+[REQ] PUT /api/personas/17 body: {"apellido_materno":"gomez","edad":21,"curp":"Sí","estatus":"madres_solteras"}
+[PUT] /api/personas/17 - body: {"apellido_materno":"gomez","edad":21,"curp":"Sí","estatus":"madres_solteras"}
+Executing dynamic SQL: UPDATE personas SET apellido_materno = ?, edad = ?, curp = ? WHERE id_persona = ? params: [ 'gomez', 21, 'Sí', '17' ]
+[SQL EXEC] UPDATE personas SET apellido_materno = ?, edad = ?, curp = ? WHERE id_persona = ? params: [ 'gomez', 21, 'Sí', '17' ]
+Update result: 1
+Inserting estatus record for persona 17 madres_solteras
+[SQL EXEC] INSERT INTO estatus (id_persona, estatus, fecha_asignacion) VALUES (?, ?, CURDATE()) params: [ '17', 'madres_solteras' ]
+[SQL EXEC] 
+      SELECT p.*, c.id_cargo, c.cargo, c.fecha_inicio AS cargo_fecha_inicio, c.fecha_fin AS cargo_fecha_fin,
+             COALESCE(e.estatus, '') as estatus, e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona AND c.id_cargo = (
+        SELECT id_cargo FROM cargos WHERE id_persona = p.id_persona ORDER BY fecha_inicio DESC LIMIT 1
+      )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona AND e.id_estatus = (
+        SELECT id_estatus FROM estatus WHERE id_persona = p.id_persona ORDER BY fecha_asignacion DESC LIMIT 1
+      )
+      WHERE p.id_persona = ?
+     params: [ '17' ]
+[REQ] GET /api/personas/17/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '17' ]
+[REQ] GET /api/personas/17/cargos body: undefined
+[SQL EXEC] SELECT * FROM cargos WHERE id_persona = ? ORDER BY fecha_inicio DESC params: [ '17' ]
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] POST /api/personas body: {"nombre":"edgar","apellido_paterno":"ruiz","apellido_materno":"sarmiento","edad":23,"direccion":"centro","telefono":"1234567","ano_alta_agencia":2004,"cargo":"tesorero","estatus":"directos","curp":"No","credencial":"","carta_compromiso":"","constancia_no_adeudo":"","solicitud_toma_agua":"","autorizacion_toma_agua":"","solicitud_cambio_propietario":"","respuesta_solicitud_cambio_propietario":"","fecha_registro":"","cargo_fecha_inicio":"2025-02-11","cargo_fecha_fin":"2027-02-02","aportacion_inicial":{"cooperacion_rastreo":"rastreo","asistio_tequios":"No","asistio_reuniones":"No","multa":150}}
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/personas/18/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '18' ]
+[REQ] PUT /api/personas/18 body: {"edad":30,"credencial":"Sí","carta_compromiso":"Sí","constancia_no_adeudo":"Sí","cargo":"tesorero","cargo_fecha_inicio":"2025-02-11T06:00:00.000Z","cargo_fecha_fin":"2027-02-02T06:00:00.000Z","id_cargo":9,"estatus":"directos"}
+[PUT] /api/personas/18 - body: {"edad":30,"credencial":"Sí","carta_compromiso":"Sí","constancia_no_adeudo":"Sí","cargo":"tesorero","cargo_fecha_inicio":"2025-02-11T06:00:00.000Z","cargo_fecha_fin":"2027-02-02T06:00:00.000Z","id_cargo":9,"estatus":"directos"}
+Executing dynamic SQL: UPDATE personas SET edad = ?, credencial = ?, carta_compromiso = ?, constancia_no_adeudo = ? WHERE id_persona = ? params: [ 30, 'Sí', 'Sí', 'Sí', '18' ]
+[SQL EXEC] UPDATE personas SET edad = ?, credencial = ?, carta_compromiso = ?, constancia_no_adeudo = ? WHERE id_persona = ? params: [ 30, 'Sí', 'Sí', 'Sí', '18' ]
+Update result: 1
+[SQL EXEC] SHOW COLUMNS FROM cargos params: undefined
+Executing cargo SQL: UPDATE cargos SET cargo = ?, fecha_inicio = ?, fecha_fin = ? WHERE id_cargo = ? params: [
+  'tesorero',
+  '2025-02-11T06:00:00.000Z',
+  '2027-02-02T06:00:00.000Z',
+  9
+]
+[SQL EXEC] UPDATE cargos SET cargo = ?, fecha_inicio = ?, fecha_fin = ? WHERE id_cargo = ? params: [
+  'tesorero',
+  '2025-02-11T06:00:00.000Z',
+  '2027-02-02T06:00:00.000Z',
+  9
+]
+Error updating cargos: Incorrect date value: '2025-02-11T06:00:00.000Z' for column 'fecha_inicio' at row 1
+Inserting estatus record for persona 18 directos
+[SQL EXEC] INSERT INTO estatus (id_persona, estatus, fecha_asignacion) VALUES (?, ?, CURDATE()) params: [ '18', 'directos' ]
+[SQL EXEC] 
+      SELECT p.*, c.id_cargo, c.cargo, c.fecha_inicio AS cargo_fecha_inicio, c.fecha_fin AS cargo_fecha_fin,
+             COALESCE(e.estatus, '') as estatus, e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona AND c.id_cargo = (
+        SELECT id_cargo FROM cargos WHERE id_persona = p.id_persona ORDER BY fecha_inicio DESC LIMIT 1
+      )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona AND e.id_estatus = (
+        SELECT id_estatus FROM estatus WHERE id_persona = p.id_persona ORDER BY fecha_asignacion DESC LIMIT 1
+      )
+      WHERE p.id_persona = ?
+     params: [ '18' ]
+[REQ] GET /api/personas/18/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '18' ]
+[REQ] GET /api/personas/18/cargos body: undefined
+[SQL EXEC] SELECT * FROM cargos WHERE id_persona = ? ORDER BY fecha_inicio DESC params: [ '18' ]
+[REQ] GET /api/personas/17/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '17' ]
+[REQ] GET /api/personas/17/cargos body: undefined
+[SQL EXEC] SELECT * FROM cargos WHERE id_persona = ? ORDER BY fecha_inicio DESC params: [ '17' ]
+[REQ] POST /api/login body: {"username":"admin","password":"admin123"}
+[LOGIN] Intento para usuario: admin
+[SQL EXEC] SELECT * FROM usuarios WHERE username = ? params: [ 'admin' ]
+[LOGIN] Exitoso para admin
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] POST /api/login body: {"username":"admin","password":"admin123"}
+[LOGIN] Intento para usuario: admin
+[SQL EXEC] SELECT * FROM usuarios WHERE username = ? params: [ 'admin' ]
+[LOGIN] Exitoso para admin
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas/17/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '17' ]
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] POST /api/login body: {"username":"admin","password":"admin123"}
+[LOGIN] Intento para usuario: admin
+[SQL EXEC] SELECT * FROM usuarios WHERE username = ? params: [ 'admin' ]
+[LOGIN] Exitoso para admin
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] POST /api/login body: {"username":"admin","password":"admin123"}
+[LOGIN] Intento para usuario: admin
+[SQL EXEC] SELECT * FROM usuarios WHERE username = ? params: [ 'admin' ]
+[LOGIN] Exitoso para admin
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] POST /api/personas body: {"nombre":"kevin","apellido_paterno":"hernandez","apellido_materno":"perez","edad":25,"direccion":"adolfo lopez","telefono":"","ano_alta_agencia":2000,"cargo":"vocal","estatus":"directos","curp":"No","credencial":"Sí","carta_compromiso":"Sí","constancia_no_adeudo":"Sí","solicitud_toma_agua":"","autorizacion_toma_agua":"","solicitud_cambio_propietario":"","respuesta_solicitud_cambio_propietario":"","fecha_registro":"","cargo_fecha_inicio":"2010-02-11","cargo_fecha_fin":"2011-02-12","aportacion_inicial":{"cooperacion_rastreo":"","asistio_tequios":"No","asistio_reuniones":"No","multa":0}}
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/personas/19/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '19' ]
+[REQ] PUT /api/personas/19 body: {"telefono":"9531126789","solicitud_toma_agua":"Sí","respuesta_solicitud_cambio_propietario":"No","cargo":"vocal","cargo_fecha_inicio":"2010-02-11T06:00:00.000Z","cargo_fecha_fin":"2011-02-12T06:00:00.000Z","id_cargo":10,"estatus":"directos"}
+[PUT] /api/personas/19 - body: {"telefono":"9531126789","solicitud_toma_agua":"Sí","respuesta_solicitud_cambio_propietario":"No","cargo":"vocal","cargo_fecha_inicio":"2010-02-11T06:00:00.000Z","cargo_fecha_fin":"2011-02-12T06:00:00.000Z","id_cargo":10,"estatus":"directos"}
+Executing dynamic SQL: UPDATE personas SET telefono = ?, solicitud_toma_agua = ?, respuesta_solicitud_cambio_propietario = ? WHERE id_persona = ? params: [ '9531126789', 'Sí', 'No', '19' ]
+[SQL EXEC] UPDATE personas SET telefono = ?, solicitud_toma_agua = ?, respuesta_solicitud_cambio_propietario = ? WHERE id_persona = ? params: [ '9531126789', 'Sí', 'No', '19' ]
+Update result: 1
+[SQL EXEC] SHOW COLUMNS FROM cargos params: undefined
+Executing cargo SQL: UPDATE cargos SET cargo = ?, fecha_inicio = ?, fecha_fin = ? WHERE id_cargo = ? params: [ 'vocal', '2010-02-11T06:00:00.000Z', '2011-02-12T06:00:00.000Z', 10 ]
+[SQL EXEC] UPDATE cargos SET cargo = ?, fecha_inicio = ?, fecha_fin = ? WHERE id_cargo = ? params: [ 'vocal', '2010-02-11T06:00:00.000Z', '2011-02-12T06:00:00.000Z', 10 ]
+Error updating cargos: Incorrect date value: '2010-02-11T06:00:00.000Z' for column 'fecha_inicio' at row 1
+Inserting estatus record for persona 19 directos
+[SQL EXEC] INSERT INTO estatus (id_persona, estatus, fecha_asignacion) VALUES (?, ?, CURDATE()) params: [ '19', 'directos' ]
+[SQL EXEC] 
+      SELECT p.*, c.id_cargo, c.cargo, c.fecha_inicio AS cargo_fecha_inicio, c.fecha_fin AS cargo_fecha_fin,
+             COALESCE(e.estatus, '') as estatus, e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona AND c.id_cargo = (
+        SELECT id_cargo FROM cargos WHERE id_persona = p.id_persona ORDER BY fecha_inicio DESC LIMIT 1
+      )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona AND e.id_estatus = (
+        SELECT id_estatus FROM estatus WHERE id_persona = p.id_persona ORDER BY fecha_asignacion DESC LIMIT 1
+      )
+      WHERE p.id_persona = ?
+     params: [ '19' ]
+[REQ] GET /api/personas/19/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '19' ]
+[REQ] GET /api/personas/19/cargos body: undefined
+[SQL EXEC] SELECT * FROM cargos WHERE id_persona = ? ORDER BY fecha_inicio DESC params: [ '19' ]
+[REQ] POST /api/cargos body: {"id_persona":19,"cargo":"suplente","fecha_inicio":"2026-02-11","fecha_fin":""}
+[SQL EXEC] INSERT INTO cargos (id_persona, cargo, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?) params: [ 19, 'suplente', '2026-02-11', null ]
+[REQ] GET /api/personas/19/cargos body: undefined
+[SQL EXEC] SELECT * FROM cargos WHERE id_persona = ? ORDER BY fecha_inicio DESC params: [ '19' ]
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] POST /api/personas/19/aportaciones body: {"ano":2026,"cooperacion_rastreo":"rastreo","asistio_tequios":"No","asistio_reuniones":"Sí","multa":100}
+[SQL EXEC] INSERT INTO aportaciones (id_persona, ano, cooperacion_rastreo, asistio_tequios, asistio_reuniones, multa)
+       VALUES (?, ?, ?, ?, ?, ?) params: [ '19', 2026, 'rastreo', 'No', 'Sí', 100 ]
+[REQ] GET /api/personas/19/aportaciones body: undefined
+[SQL EXEC] SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC params: [ '19' ]
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined
+[REQ] GET /api/personas body: undefined
+[SQL EXEC] 
+      SELECT 
+        p.*,
+        c.id_cargo,
+        c.cargo,
+        c.fecha_inicio AS cargo_fecha_inicio,
+        c.fecha_fin AS cargo_fecha_fin,
+        COALESCE(e.estatus, 'activos') as estatus,
+        e.fecha_asignacion AS estatus_fecha
+      FROM personas p
+      LEFT JOIN cargos c ON p.id_persona = c.id_persona 
+        AND c.id_cargo = (
+          SELECT id_cargo FROM cargos 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_inicio DESC LIMIT 1
+        )
+      LEFT JOIN estatus e ON p.id_persona = e.id_persona 
+        AND e.id_estatus = (
+          SELECT id_estatus FROM estatus 
+          WHERE id_persona = p.id_persona 
+          ORDER BY fecha_asignacion DESC LIMIT 1
+        )
+     ORDER BY p.id_persona params: []
+[REQ] GET /api/health body: undefined
+[SQL EXEC] SELECT 1 params: undefined

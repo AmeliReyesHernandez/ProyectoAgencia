@@ -251,8 +251,9 @@ app.post('/api/personas', async (req, res) => {
       );
     }
 
-    // 4. Insertar Aportación Inicial (si existe)
-    if (aportacion_inicial && (aportacion_inicial.cooperacion_rastreo || aportacion_inicial.multa > 0 || aportacion_inicial.asistio_tequios)) {
+    // 4. Insertar Aportación Inicial (si existe y tiene datos relevantes)
+    // Se ignora si solo vienen los valores por defecto (ej. 'No' en tequios)
+    if (aportacion_inicial && (aportacion_inicial.cooperacion_rastreo || aportacion_inicial.multa > 0)) {
       const { ano, cooperacion_rastreo, asistio_tequios, asistio_reuniones, multa } = aportacion_inicial;
 
       await connection.query(
@@ -438,6 +439,37 @@ app.delete('/api/personas/:id', async (req, res) => {
   }
 });
 
+// Obtener aportaciones de una persona
+app.get('/api/personas/:id/aportaciones', async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM aportaciones WHERE id_persona = ? ORDER BY ano DESC', [req.params.id]);
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Crear aportacion para una persona
+app.post('/api/personas/:id/aportaciones', async (req, res) => {
+  try {
+    const { ano, cooperacion_rastreo, asistio_tequios, asistio_reuniones, multa } = req.body;
+
+    if (!ano || !cooperacion_rastreo) {
+      return res.status(400).json({ error: 'Año y Cooperación son obligatorios' });
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO aportaciones (id_persona, ano, cooperacion_rastreo, asistio_tequios, asistio_reuniones, multa)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [req.params.id, ano, cooperacion_rastreo, asistio_tequios || 'No', asistio_reuniones || 'No', multa || 0]
+    );
+    res.status(201).json({ id: result.insertId, message: 'Aportación creada correctamente' });
+  } catch (error) {
+    console.error('Error creando aportacion:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.delete('/api/aportaciones/:id', async (req, res) => {
   try {
     await pool.query('DELETE FROM aportaciones WHERE id_aportacion = ?', [req.params.id]);
@@ -460,10 +492,10 @@ app.get('/api/personas/:id/cargos', async (req, res) => {
 
 app.post('/api/cargos', async (req, res) => {
   try {
-    const { id_persona, cargo, fecha_inicio } = req.body;
+    const { id_persona, cargo, fecha_inicio, fecha_fin } = req.body;
     const [result] = await pool.query(
-      'INSERT INTO cargos (id_persona, cargo, fecha_inicio) VALUES (?, ?, ?)',
-      [id_persona, cargo, fecha_inicio]
+      'INSERT INTO cargos (id_persona, cargo, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?)',
+      [id_persona, cargo, fecha_inicio, fecha_fin || null]
     );
     res.status(201).json({ id: result.insertId, message: 'Cargo asignado' });
   } catch (error) {
