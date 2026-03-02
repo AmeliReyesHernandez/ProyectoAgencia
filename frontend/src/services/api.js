@@ -3,8 +3,9 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
 // Servicio para Personae
 export const personaeService = {
-    async getAll() {
-        const response = await fetch(`${API_URL}/personas`);
+    async getAll(estatus) {
+        const url = estatus ? `${API_URL}/personas?estatus=${encodeURIComponent(estatus)}` : `${API_URL}/personas`;
+        const response = await fetch(url);
         if (!response.ok) throw new Error('Error al obtener personas');
         return response.json();
     },
@@ -21,7 +22,10 @@ export const personaeService = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(persona)
         });
-        if (!response.ok) throw new Error('Error al crear persona');
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Error al crear persona');
+        }
         return response.json();
     },
 
@@ -31,7 +35,10 @@ export const personaeService = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(persona)
         });
-        if (!response.ok) throw new Error('Error al actualizar persona');
+        if (!response.ok) {
+            const err = await response.json().catch(() => ({}));
+            throw new Error(err.error || err.message || 'Error al actualizar persona');
+        }
         return response.json();
     },
 
@@ -46,23 +53,22 @@ export const personaeService = {
 
 // Servicio para Aportaciones
 export const aportacionesService = {
-    async getAll() {
-        const response = await fetch(`${API_URL}/aportaciones`);
-        if (!response.ok) throw new Error('Error al obtener aportaciones');
-        return response.json();
-    },
-
     async getByPersona(idPersona) {
-        const response = await fetch(`${API_URL}/aportaciones/persona/${idPersona}`);
+        const response = await fetch(`${API_URL}/personas/${idPersona}/aportaciones`);
         if (!response.ok) throw new Error('Error al obtener aportaciones de persona');
         return response.json();
     },
 
     async create(aportacion) {
-        const response = await fetch(`${API_URL}/aportaciones`, {
+        // Expects aportacion to include `id_persona` or receive it separately
+        const id_persona = aportacion.id_persona;
+        if (!id_persona) throw new Error('Falta id_persona en aportación');
+        const payload = { ...aportacion };
+        delete payload.id_persona;
+        const response = await fetch(`${API_URL}/personas/${id_persona}/aportaciones`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(aportacion)
+            body: JSON.stringify(payload)
         });
         if (!response.ok) throw new Error('Error al crear aportación');
         return response.json();

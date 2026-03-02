@@ -1,0 +1,18 @@
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+🚀 Backend corriendo en http://localhost:4000
+📝 Entorno: development
+🔐 CORS permitido desde: http://localhost:5173, http://localhost:5174
+📊 Endpoints disponibles:
+   POST   /api/login
+   PUT    /api/change-password
+   GET    /api/personas
+   POST   /api/personas
+   PUT    /api/personas/:id
+   DELETE /api/personas/:id
+   GET    /api/personas/:id/aportaciones
+   POST   /api/personas/:id/aportaciones
+   DELETE /api/aportaciones/:id
+   GET    /api/personas/:id/cargos
+   POST   /api/cargos
+   PUT    /api/cargos/:id
+   GET    /api/health

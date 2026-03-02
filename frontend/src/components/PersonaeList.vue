@@ -52,7 +52,7 @@
           {{ formError }}
         </div>
 
-        <form @submit.prevent="savePersona">
+        <form @submit.prevent="handleSubmit" novalidate>
           <!-- Información Personal -->
           <div class="form-section">
             <h4> Información Personal</h4>
@@ -469,6 +469,8 @@ const form = ref({
   }
 });
 
+const originalPersona = ref(null);
+
 const aportacionForm = ref({
   ano: new Date().getFullYear(),
   cooperacion_rastreo: '',
@@ -521,9 +523,7 @@ const loadPersonae = async (statusFilter = '') => {
   loading.value = true;
   error.value = null;
   try {
-    const response = await fetch('http://localhost:4000/api/personas');
-    if (!response.ok) throw new Error('Error al obtener personas');
-    const data = await response.json();
+    const data = await personaeService.getAll(statusFilter);
     allPersonae.value = data;
   } catch (err) {
     error.value = err.message;
@@ -553,20 +553,49 @@ const savePersona = async () => {
   saving.value = true;
   try {
     if (editingId.value) {
-      // Al editar, ignoramos fecha_registro y ano_alta_agencia si viniera
-      const { aportacion_inicial, fecha_registro, ano_alta_agencia, ...personaData } = form.value;
-      // Enviamos ano_alta_agencia solo si queremos permitir su edición, pero el usuario pidió que no.
-      // Así que lo excluimos del payload de update.
-      await personaeService.update(editingId.value, personaData);
+      // Build a minimal payload with only changed fields to avoid sending nulls
+      const changed = {};
+      const skipKeys = ['aportacion_inicial', 'fecha_registro', 'ano_alta_agencia'];
+      const src = originalPersona.value || {};
+      for (const key of Object.keys(form.value)) {
+        if (skipKeys.includes(key)) continue;
+        const newVal = form.value[key];
+        const oldVal = src[key];
+        if (newVal === undefined) continue;
+        if (JSON.stringify(newVal) !== JSON.stringify(oldVal)) {
+          if (newVal === null) continue; // avoid nulling NOT NULL columns
+          changed[key] = newVal;
+        }
+      }
+
+      // Include cargo/estatus related fields explicitly if present
+      if (form.value.cargo) changed.cargo = form.value.cargo;
+      if (form.value.cargo_fecha_inicio) changed.cargo_fecha_inicio = form.value.cargo_fecha_inicio;
+      if (form.value.cargo_fecha_fin) changed.cargo_fecha_fin = form.value.cargo_fecha_fin;
+      if (form.value.id_cargo) changed.id_cargo = form.value.id_cargo;
+      if (form.value.estatus) changed.estatus = form.value.estatus;
+
+      console.log('[savePersona] updating id', editingId.value, 'payload:', JSON.stringify(changed));
+      const updateRes = await personaeService.update(editingId.value, changed);
+      if (updateRes && updateRes.persona) {
+        const updated = updateRes.persona;
+        const idx = allPersonae.value.findIndex(p => p.id_persona === updated.id_persona);
+        if (idx !== -1) {
+          allPersonae.value.splice(idx, 1, updated);
+        } else {
+          allPersonae.value.push(updated);
+        }
+      } else {
+        await loadPersonae(selectedStatus.value);
+      }
       successMessage.value = 'Persona actualizada exitosamente';
     } else {
+      console.log('[savePersona] creating payload:', JSON.stringify(form.value));
       await personaeService.create(form.value);
       successMessage.value = 'Persona agregada exitosamente';
+      await loadPersonae(selectedStatus.value);
     }
-    await loadPersonae(selectedStatus.value);
     cancelForm();
-    form.value = { /* Reset form */ }; 
-    // (Simplificado reset aquí por brevedad, idealmente usar una función reset)
     setTimeout(() => { successMessage.value = ''; }, 3000);
   } catch (err) {
     console.error('Error al guardar:', err);
@@ -574,6 +603,11 @@ const savePersona = async () => {
   } finally {
     saving.value = false;
   }
+};
+
+const handleSubmit = async () => {
+  console.log('[handleSubmit] form submit intercepted, calling savePersona');
+  await savePersona();
 };
 
 const verDetalles = async (persona) => {
@@ -680,6 +714,8 @@ const editPersona = (persona) => {
         multa: 0 
     }
   };
+  // snapshot original values
+  originalPersona.value = JSON.parse(JSON.stringify(persona));
   showAddForm.value = true;
 };
 

@@ -14,8 +14,8 @@ async function checkSchema() {
         const connection = await mysql.createConnection(dbConfig);
         console.log('Conectado a la base de datos.');
 
-        const [rows] = await connection.query('DESCRIBE cargos');
-        console.log('Estructura de la tabla cargos:');
+        const [rows] = await connection.query("SHOW TRIGGERS LIKE 'personas'");
+        console.log('Triggers en personas:');
         console.table(rows);
 
         await connection.end();
